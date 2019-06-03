@@ -1,0 +1,22 @@
+Stories
+	Create/delete availability block
+		Delete an appointment from a provider
+		Inherent the methods from the Appointment class
+		Store availability blocks in an array in the Provider class
+	View Schedule
+		Choose Provider
+		Choose the day
+		Multi select services
+		Print out the service name, service duration, and (red for unavailable green for available) availability blocks
+	Create new service
+	Adding testing
+		- Test Driven Development
+		- Test file per controller
+		- Test
+			- Return Values
+			- Error Checking
+			- Data structure state (ex: no duplicates)
+	
+
+Road block	
+	A day in a reoccuring appointment is unavailable
