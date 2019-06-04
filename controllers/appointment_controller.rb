@@ -53,18 +53,30 @@ class AppointmentController
         selected_provider = ProviderController.all.select { |provider| provider.name == @appointment_candidate.provider }[0]
         selected_provider.scheduled_appointments << @appointment_candidate
 
-        puts "Appointment successfully scheduled for #{@appointment_candidate.client}:
-        Service: #{@appointment_candidate.service}
-        Provider: #{@appointment_candidate.provider}
-        Date: #{@appointment_candidate.date}
-        At: #{@appointment_candidate.start_time}:00
-        ----------"
-        puts "\n"
+        appointment_candidate.print
+
+        # puts "Appointment successfully scheduled for #{@appointment_candidate.client}:
+        # Service: #{@appointment_candidate.service}
+        # Provider: #{@appointment_candidate.provider}
+        # Date: #{@appointment_candidate.date}
+        # At: #{@appointment_candidate.start_time}:00
+        # ----------"
+        # puts "\n"
         continueProgram = false
       else
         puts "Your requested appointment is not available, please try a different request."
       end
     end
+  end
+
+  def self.remove
+    # continueProgram = true
+    prompt = TTY::Prompt.new(interrupt: :exit)
+
+    # choose provider
+    provider = prompt.select("Please select from these providers:", ProviderController.all
+                                                                      .map{|p| p.name})
+
   end
 
   def self.check_availability
@@ -84,5 +96,14 @@ class AppointmentController
     end
 
     check_equal.include?(true)
+  end
+
+  def self.print
+    puts "Service: #{@appointment_candidate.service}
+    Provider: #{@appointment_candidate.provider}
+    Date: #{@appointment_candidate.date}
+    At: #{@appointment_candidate.start_time}:00
+    ----------"
+    puts "\n"
   end
 end
