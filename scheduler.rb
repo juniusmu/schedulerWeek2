@@ -33,6 +33,10 @@ class Scheduler
 			controller: AppointmentController,
 			method_name: :add
 		},
+		"Delete an Appointment" => {
+			controller: AppointmentController,
+			method_name: :remove
+		},
 		"View Schedule of a Particular Provider" => {
 			controller: ProviderController,
 			method_name: :view_schedule
