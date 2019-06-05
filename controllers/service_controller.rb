@@ -1,5 +1,6 @@
 require 'tty-prompt'
 require_relative '../models/service'
+require_relative '../seed'
 
 class ServiceController
   attr_accessor :services
@@ -34,6 +35,11 @@ class ServiceController
     puts "#{service.name} is successfully added."
     puts "\n"
     puts self.index
+  end
+
+  def self.add_service(name, price, duration)
+    service = Service.new(name, price, duration)
+    $service_list << service
   end
 
   def self.remove
