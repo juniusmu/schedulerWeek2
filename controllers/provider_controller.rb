@@ -42,13 +42,17 @@ class ProviderController
     days_off = prompt.multi_select('Days off:', ['Monday', 'Tuesday', 'Wednesday', 
                 'Thursday', 'Friday', 'Saturday', 'Sunday'])
 
-    provider = Provider.new(name, phone_number, services, days_off)
-    @providers << provider
+    success = add_provider(name, phone_number, services, days_off)
+    
+    if success
+    # provider = Provider.new(name, phone_number, services, days_off)
+    # @providers << provider
 
-    puts "\n"
-    puts "#{provider.name} is successfully added."
-    puts "\n"
-    puts self.index
+      puts "\n"
+      puts "#{provider.name} is successfully added."
+      puts "\n"
+      puts self.index
+    end
   end
 
   def self.remove
@@ -97,5 +101,11 @@ class ProviderController
       "
     end
     puts "----------\n"
+  end
+
+  def self.add_provider(name, phone_number, services, days_off = nil)
+
+    provider = Provider.new(name, phone_number, services, days_off)
+    @providers << provider
   end
 end
