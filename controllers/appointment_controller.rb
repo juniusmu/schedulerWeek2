@@ -7,7 +7,6 @@ require_relative '../utilities'
 class AppointmentController
   attr_accessor :appointment_candidate, :appointments
 
-
   @appointments = []
 
   def self.all
@@ -44,24 +43,20 @@ class AppointmentController
       day = prompt.ask("What day of the month would you like to have the appointment?")
       date = Date.new(2020,month.to_i,day.to_i)
       start_time = prompt.ask("What time would you like to start the appointment?")
-      
-      @appointment_candidate = Appointment.new(client, service, 
-                                    provider, date, start_time)
-      
-      if check_availability
-        @appointments << @appointment_candidate
-        selected_provider = ProviderController.all.select { |provider| provider.name == @appointment_candidate.provider }[0]
-        selected_provider.scheduled_appointments << @appointment_candidate
 
-        appointment_candidate.print
+      success = add_appointment(client, service, provider, date, start_time)
 
-        # puts "Appointment successfully scheduled for #{@appointment_candidate.client}:
-        # Service: #{@appointment_candidate.service}
-        # Provider: #{@appointment_candidate.provider}
-        # Date: #{@appointment_candidate.date}
-        # At: #{@appointment_candidate.start_time}:00
-        # ----------"
-        # puts "\n"
+      
+      
+      if success
+        # @appointments << @appointment_candidate
+        # selected_provider = ProviderController.all.select { |provider| provider.name == @appointment_candidate.provider }[0]
+        # selected_provider.scheduled_appointments << @appointment_candidate
+
+        puts "Appointment successfully scheduled for #{client}:"
+
+        print
+
         continueProgram = false
       else
         puts "Your requested appointment is not available, please try a different request."
@@ -77,12 +72,29 @@ class AppointmentController
     provider = prompt.select("Please select from these providers:", ProviderController.all
                                                                       .map{|p| p.name})
 
+    # choose the name of the client
+      # note that the appointments know the names of clients
+    provider_clients = provider.scheduled_appointments.select{|pc| pc.client}
+    client = prompt.select("Choose the client:", provider_clients)
+   
+
+    # list appointments
+    # client_appointments = @appointments.map{|ca| ca.provider.name = provider.name}
+    # client_appointments.each{print}
+
+    # puts client_appointments.first.name
+
+    # choose an appointment from the provider
+    # client_appointment_delete = prompt.select("Select the clients appointment to delete:", client_appointments.map{|c| c.name})
+    # are you sure?
+    # delete
+
   end
 
   def self.check_availability
     key_of_day = @appointment_candidate.date.wday
     day_of_week = DaysOfWeek::DAY_OF_WEEK[key_of_day]
-    provider_name = @appointment_candidate.provider
+    provider_name = @appointment_candidate.provider.name
     provider_days_off = ProviderController.all.find { |provider| provider.name == provider_name}.days_off
     
     return false if provider_days_off.include?(day_of_week) 
@@ -99,11 +111,33 @@ class AppointmentController
   end
 
   def self.print
-    puts "Service: #{@appointment_candidate.service}
+    puts "
+    Service: #{@appointment_candidate.service}
     Provider: #{@appointment_candidate.provider}
     Date: #{@appointment_candidate.date}
     At: #{@appointment_candidate.start_time}:00
     ----------"
     puts "\n"
   end
+
+  private #-------------------------------------------------------------------------------
+
+  def self.add_appointment(client, service, provider, date, start_time)
+    @appointment_candidate = Appointment.new(client, service, provider, date, start_time)
+    
+
+    if check_availability
+      selected_provider = ProviderController.all.select { |p| p.name == provider.name }[0]
+
+      @appointments << @appointment_candidate
+      selected_provider.scheduled_appointments << @appointment_candidate
+
+      return true
+    else 
+      return false
+    end
+  end
+
+  # def self.remove_appointment
+    
 end
