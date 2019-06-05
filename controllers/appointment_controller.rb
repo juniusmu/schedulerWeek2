@@ -46,13 +46,7 @@ class AppointmentController
 
       success = add_appointment(client, service, provider, date, start_time)
 
-      
-      
       if success
-        # @appointments << @appointment_candidate
-        # selected_provider = ProviderController.all.select { |provider| provider.name == @appointment_candidate.provider }[0]
-        # selected_provider.scheduled_appointments << @appointment_candidate
-
         puts "Appointment successfully scheduled for #{client}:"
 
         print
