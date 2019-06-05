@@ -20,3 +20,7 @@ Stories
 
 Road block	
 	A day in a reoccuring appointment is unavailable
+
+
+To Do
+	The code needs to be refactored to use testable functions
