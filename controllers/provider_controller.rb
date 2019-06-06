@@ -1,34 +1,35 @@
 require 'tty-prompt'
 require 'date'
+require 'set'
 require_relative '../models/provider'
 require_relative '../models/service'
 require_relative '../utilities'
 include DaysOfWeek
 
 class ProviderController
-  attr_accessor :providers
+  attr_accessor :providers, :available_days
    @providers = []
 #  @providers = [Provider.new('Junius', '234-486-9800', @service_types),     
 #                Provider.new('Pearl', '978-123-5768', @service_types),
 #                Provider.new('Rifty', '008-111-2590', @service_types)]
 
-  @available_days = []
+  @available_days = Set[]
   def self.all
     @providers
   end
 
-  def self.index
-    puts "Here's the current list of providers:"
+ # def self.index
+ #   puts "Here's the current list of providers:"
 
-    @providers.map do |provider|
-      puts "#{provider.name}'s phone number is #{provider.phone_number}."
-      puts "(S)he provides these services: #{provider.services} every day of the week except for:"
-      provider.days_off.each do |day|
-	      puts day 
-      end
-      puts "––––––––––"
-    end
-  end
+ #   @providers.map do |provider|
+ #     puts "#{provider.name}'s phone number is #{provider.phone_number}."
+ #     puts "(S)he provides these services: #{provider.services} every day of the week except for:"
+ #     provider.days_off.each do |day|
+ #             puts day 
+ #     end
+ #     puts "––––––––––"
+ #   end
+ # end
 
   def self.add
     prompt = TTY::Prompt.new(interrupt: :exit)
@@ -61,8 +62,30 @@ class ProviderController
 	provider_name = prompt.select("Which provider's schedule would you like to see?", all_names)
 
 	selected_provider = @providers.select { |provider| provider.name == provider_name}[0]
+	puts selected_provider.available_days	
+	availability_frequency = prompt.select("Reocurring or unique day off?", ["Reoccuring", "Unique"])
+	case availability_frequency
+	when "Reoccuring"
+		days_off = prompt.multi_select('Days off:', ['Monday', 'Tuesday', 'Wednesday', 
+		'Thursday', 'Friday', 'Saturday', 'Sunday'])
+		days_off.each do |day|
+			first_date_of_day = DaysOfWeek::FIRST_DATE_OF_DAY_IN_2020[day]
+			date = Date.new(2020, 1, first_date_of_day)
+			loop do
+				if date.year > 2020
+					break
+				end
+				selected_provider.available_days << date
+				date = date + 7
+			end
 
-	
+		end
+	puts "Success"
+	when "Unique"
+		day = prompt.ask ("Day:")
+		month = prompt.ask("Month:")
+		selected_provider.available_days << Date.new(2020,month.to_i,day.to_i)
+	end
 
   end
   #TODO: abstract the puts into something that's in control of input and output
@@ -110,6 +133,6 @@ class ProviderController
 	puts "\n"
 	puts "#{provider.name} is successfully added."
 	puts "\n"
-	puts self.index
+	#puts self.index
   end
 end
