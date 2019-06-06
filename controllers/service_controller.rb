@@ -54,4 +54,8 @@ class ServiceController
     puts "\n"
     puts self.index
   end
+  def self.remove_service(service_name)
+
+	$service_list = $service_list.delete_if { |service| service.name == service_name }
+  end
 end

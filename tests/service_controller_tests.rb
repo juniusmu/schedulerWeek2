@@ -12,4 +12,12 @@ RSpec.describe ServiceController do
 		expect($service_list.size()).to eq(5)	
         end
     end
+
+    describe "#remove_service" do
+        it "removes a Service from global service_list" do
+		ServiceController.remove_service("Liver Transplants")
+        	expect($service_list.size()).to eq(4)	
+        end
+    end
+
 end
