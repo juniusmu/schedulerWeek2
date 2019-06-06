@@ -1,0 +1,2 @@
+class Availability < Appointment
+end
