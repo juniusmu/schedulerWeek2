@@ -1,11 +1,9 @@
 
 # @appointment = Appointment.new('Bob', 'Test Service 1', 'Test', Date.new(2020,1,1), 12)
 
-
 require '../controllers/service_controller'
 require '../controllers/provider_controller'
 require '../controllers/appointment_controller'
-
 
 RSpec.describe ProviderController do 
     describe "#add_provider" do
