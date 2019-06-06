@@ -1,19 +1,16 @@
 require 'tty-prompt'
+require 'date'
 require_relative '../models/provider'
 require_relative '../models/service'
 
 class ProviderController
   attr_accessor :providers
 
-  @service_types = ['Mind Reading', 
-                    'Demonic Exorcism', 
-                    'Potion Therapy', 
-                    'Liver Transplants']
-
   @providers = [Provider.new('Junius', '234-486-9800', @service_types),     
                 Provider.new('Pearl', '978-123-5768', @service_types),
                 Provider.new('Rifty', '008-111-2590', @service_types)]
 
+  @available_days = []
   def self.all
     @providers
   end

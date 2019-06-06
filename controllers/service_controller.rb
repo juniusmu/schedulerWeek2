@@ -3,11 +3,6 @@ require_relative '../models/service'
 require_relative '../seed'
 
 class ServiceController
-  attr_accessor :services
-
-  @services = [Service.new('Hair cut', 20, 1), 
-              Service.new('Massage', 50, 2),
-              Service.new('Makeup', 100, 2)]
 
   def self.all
     @services
