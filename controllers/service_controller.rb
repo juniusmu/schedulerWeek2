@@ -16,7 +16,7 @@ class ServiceController
   def self.index
     puts "Here's the current list of services:"
     
-    @services.map do |service|
+    $service_list.map do |service|
       puts "#{service.name} costs $#{service.price}, and takes about #{service.duration} hours."
       puts "––––––––––"
     end
@@ -29,7 +29,7 @@ class ServiceController
     duration = prompt.ask('Duration(hours):')
     
     service = Service.new(name, price, duration)
-    @services << service
+    $service_list << service
 
     puts "\n"
     puts "#{service.name} is successfully added."
@@ -47,7 +47,7 @@ class ServiceController
     options = @services.map { |service| service.name}
     choice = prompt.select("Pick a service to delete", options)
     
-    @services = @services.delete_if { |service| service.name == choice }
+    $service_list = @services.delete_if { |service| service.name == choice }
 
     puts "\n"
     puts "#{choice} is successfully removed."

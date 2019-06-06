@@ -36,7 +36,8 @@ class ProviderController
 
     name = prompt.ask('Provider Name:')
     phone_number = prompt.ask('Phone number:')
-    choices = @service_types
+    service_types = $service_list.map { |service| service.name}
+    choices = service_types
     services = prompt.multi_select("Please choose services from the 
                 following list:", choices)
     days_off = prompt.multi_select('Days off:', ['Monday', 'Tuesday', 'Wednesday', 
@@ -61,11 +62,6 @@ class ProviderController
     choice = prompt.select("Pick a provider to remove", options)
 
     @providers = @providers.reject { |provider| provider.name == choice}
-    
-    puts "\n"
-    puts "#{choice} is successfully removed."
-    puts "\n"
-    puts self.index
   end
 
 
@@ -78,10 +74,10 @@ class ProviderController
 
 	selected_provider = @providers.select { |provider| provider.name == provider_name}[0]
 
+	
 
   end
   #TODO: abstract the puts into something that's in control of input and output
-
   def self.view_schedule
     prompt = TTY::Prompt.new(interrupt: :exit)
     all_names = []
@@ -107,5 +103,9 @@ class ProviderController
 
     provider = Provider.new(name, phone_number, services, days_off)
     @providers << provider
+     puts "\n"
+     puts "#{provider.name} is successfully added."
+     puts "\n"
+     puts self.index
   end
 end
