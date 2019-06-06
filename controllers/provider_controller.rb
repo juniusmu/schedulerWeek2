@@ -7,12 +7,13 @@ require_relative '../utilities'
 include DaysOfWeek
 
 class ProviderController
-  attr_accessor :providers, :available_days
+  attr_accessor :providers, :available_days, :services
    @providers = []
 #  @providers = [Provider.new('Junius', '234-486-9800', @service_types),     
 #                Provider.new('Pearl', '978-123-5768', @service_types),
 #                Provider.new('Rifty', '008-111-2590', @service_types)]
 
+  @services = []
   @available_days = Set[]
   def self.all
     @providers
@@ -40,6 +41,13 @@ class ProviderController
     choices = service_types
     services = prompt.multi_select("Please choose services from the 
                 following list:", choices)
+    
+    services.each do |selected_service|
+	    $services_list.each do |service|
+		    if(service.name == selected_service)
+			    @services << Service.new(service.name, service.price, service.duration)
+    end
+
     days_off = prompt.multi_select('Days off:', ['Monday', 'Tuesday', 'Wednesday', 
                 'Thursday', 'Friday', 'Saturday', 'Sunday'])
     success = add_provider(name, phone_number, services, days_off)
