@@ -88,6 +88,42 @@ class ProviderController
 	end
 
   end
+
+  def self.remove_availability
+
+	prompt = TTY::Prompt.new(interrupt: :exit)
+	all_names = []
+	@providers.each { |provider| all_names << provider.name}
+
+	provider_name = prompt.select("Which provider's schedule would you like to see?", all_names)
+
+	selected_provider = @providers.select { |provider| provider.name == provider_name}[0]
+	puts selected_provider.available_days	
+	availability_frequency = prompt.select("Reocurring or unique day off?", ["Reoccuring", "Unique"])
+	case availability_frequency
+	when "Reoccuring"
+		days_off = prompt.multi_select('Days off:', ['Monday', 'Tuesday', 'Wednesday', 
+		'Thursday', 'Friday', 'Saturday', 'Sunday'])
+		days_off.each do |day|
+			first_date_of_day = DaysOfWeek::FIRST_DATE_OF_DAY_IN_2020[day]
+			date = Date.new(2020, 1, first_date_of_day)
+			loop do
+				if date.year > 2020
+					break
+				end
+				selected_provider.available_days.delete(date)
+				date = date + 7
+			end
+
+		end
+	puts "Success"
+	when "Unique"
+		day = prompt.ask ("Day:")
+		month = prompt.ask("Month:")
+		selected_provider.available_days.delete(Date.new(2020,month.to_i,day.to_i))
+	end
+  end
+
   #TODO: abstract the puts into something that's in control of input and output
   def self.view_schedule
     prompt = TTY::Prompt.new(interrupt: :exit)
