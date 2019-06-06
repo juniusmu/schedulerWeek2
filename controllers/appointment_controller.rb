@@ -2,6 +2,7 @@ require 'tty-prompt'
 require 'date'
 require_relative '../models/appointment'
 require_relative './provider_controller'
+require_relative './client_controller'
 require_relative '../utilities'
 
 class AppointmentController
@@ -29,7 +30,18 @@ class AppointmentController
 
 
     while continueProgram do
-      client = prompt.ask("Client name:")
+      client_response = prompt.select("Are you a new client?") do |q|
+        q.choice name: 'New Client', value: true
+        q.choice name: 'Existing Client', value: false
+      end
+
+      if client_response
+        # add new client
+      else
+        client = prompt.select("Select the client:", ClientController.all
+                                                      .map{|c| c.name})
+      end
+
       service = prompt.select('Service wanted:', 
                 ['Mind Reading', 'Demonic Exorcism', 
                 'Potion Therapy', 'Liver Transplants'])
@@ -44,7 +56,10 @@ class AppointmentController
       date = Date.new(2020,month.to_i,day.to_i)
       start_time = prompt.ask("What time would you like to start the appointment?")
 
-      success = add_appointment(client, service, provider, date, start_time)
+      client_object = (ClientController.all.select{|client_name| client_name.name == client})[0]
+      provider_object = (ProviderController.all.select{|provider_name| provider_name.name == provider})[0]
+
+      success = add_appointment(client_object, service, provider_object, date, start_time)
 
       if success
         puts "Appointment successfully scheduled for #{client}:"
@@ -63,15 +78,20 @@ class AppointmentController
     prompt = TTY::Prompt.new(interrupt: :exit)
 
     # choose provider
-    provider = prompt.select("Please select from these providers:", ProviderController.all
+    provider = prompt.select("Please select the provider:", ProviderController.all
                                                                       .map{|p| p.name})
 
+    provider_object = (ProviderController.all.select{|provider_name| provider_name.name == provider})[0]
     # choose the name of the client
-      # note that the appointments know the names of clients
-    provider_clients = provider.scheduled_appointments.select{|pc| pc.client}
-    client = prompt.select("Choose the client:", provider_clients)
-   
+    provider_clients = provider_object.scheduled_appointments.map{|pc| pc.name}
 
+    # puts provider_clients.class
+
+
+    client = prompt.select("Choose the client:", provider_clients)
+
+    # month = 
+   
     # list appointments
     # client_appointments = @appointments.map{|ca| ca.provider.name = provider.name}
     # client_appointments.each{print}
@@ -106,15 +126,16 @@ class AppointmentController
 
   def self.print
     puts "
+    Client: #{@appointment_candidate.client.name}
     Service: #{@appointment_candidate.service}
-    Provider: #{@appointment_candidate.provider}
+    Provider: #{@appointment_candidate.provider.name}
     Date: #{@appointment_candidate.date}
     At: #{@appointment_candidate.start_time}:00
     ----------"
     puts "\n"
   end
 
-  private #-------------------------------------------------------------------------------
+  private
 
   def self.add_appointment(client, service, provider, date, start_time)
     @appointment_candidate = Appointment.new(client, service, provider, date, start_time)
@@ -132,6 +153,8 @@ class AppointmentController
     end
   end
 
-  # def self.remove_appointment
+  def self.remove_appointment(client, service, date, start_time)
+    @appointment_delete = AppointmentController.all.select {|a| a.client == client && a.service == service && a.date == date && a.start_time == start_time}
+  end
     
 end
