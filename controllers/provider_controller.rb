@@ -2,13 +2,15 @@ require 'tty-prompt'
 require 'date'
 require_relative '../models/provider'
 require_relative '../models/service'
+require_relative '../utilities'
+include DaysOfWeek
 
 class ProviderController
   attr_accessor :providers
-
-  @providers = [Provider.new('Junius', '234-486-9800', @service_types),     
-                Provider.new('Pearl', '978-123-5768', @service_types),
-                Provider.new('Rifty', '008-111-2590', @service_types)]
+   @providers = []
+#  @providers = [Provider.new('Junius', '234-486-9800', @service_types),     
+#                Provider.new('Pearl', '978-123-5768', @service_types),
+#                Provider.new('Rifty', '008-111-2590', @service_types)]
 
   @available_days = []
   def self.all
@@ -39,18 +41,7 @@ class ProviderController
                 following list:", choices)
     days_off = prompt.multi_select('Days off:', ['Monday', 'Tuesday', 'Wednesday', 
                 'Thursday', 'Friday', 'Saturday', 'Sunday'])
-
     success = add_provider(name, phone_number, services, days_off)
-    
-    if success
-    # provider = Provider.new(name, phone_number, services, days_off)
-    # @providers << provider
-
-      puts "\n"
-      puts "#{provider.name} is successfully added."
-      puts "\n"
-      puts self.index
-    end
   end
 
   def self.remove
@@ -96,13 +87,29 @@ class ProviderController
     puts "----------\n"
   end
 
-  def self.add_provider(name, phone_number, services, days_off = nil)
+  def self.add_provider(name, phone_number, services, days_off)
+	  dates_off = []
+	days_off.each do |day|
+		first_date_of_day = DaysOfWeek::FIRST_DATE_OF_DAY_IN_2020[day]
+		puts first_date_of_day
+		date = Date.new(2020, 1, first_date_of_day)
+		loop do
+			if date.year > 2020
+				break
+			end
+			dates_off << date
+			date = date + 7
+		end
 
-    provider = Provider.new(name, phone_number, services, days_off)
-    @providers << provider
-     puts "\n"
-     puts "#{provider.name} is successfully added."
-     puts "\n"
-     puts self.index
+	end
+	dates_off.each do |day|
+		puts day
+	end
+	provider = Provider.new(name, phone_number, services, dates_off)
+	@providers << provider
+	puts "\n"
+	puts "#{provider.name} is successfully added."
+	puts "\n"
+	puts self.index
   end
 end
