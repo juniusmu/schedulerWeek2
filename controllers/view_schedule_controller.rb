@@ -20,9 +20,7 @@ class ViewScheduleController
     day = prompt.select("Choose a day of the week (hit control + c to exit)", %w(Monday Tuesday Wendesday Thursday Friday Saturday Sunday))
 
     # Get Services for each Provider on a particular day
-    appointments = AppointmentController
-    puts appointments
-    
+    appointments = AppointmentController    
     services = prompt.multi_select("Select a service for this day", %w(One Two Three))
   end
 end
