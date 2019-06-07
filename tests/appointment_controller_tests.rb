@@ -1,5 +1,3 @@
-# @appointment = Appointment.new('Bob', 'Test Service 1', 'Test', Date.new(2020,1,1), 12)
-
 require '../controllers/service_controller'
 require '../controllers/provider_controller'
 require '../controllers/appointment_controller'
@@ -15,7 +13,7 @@ RSpec.describe AppointmentController do
 
         it "checks no appointments exist" do
             expect(appointments.size()).to eq(0)
-            expect(clients[0].appointments.size()).to eq(1)
+            expect(clients[0].appointments.size()).to eq(0)
             expect(providers[0].scheduled_appointments.size()).to eq(0)
         end
         it "adds an appointment to appointment controller" do
@@ -27,6 +25,19 @@ RSpec.describe AppointmentController do
         end
         it "check provider controller for added appointment" do
             expect(providers[0].scheduled_appointments.size()).to eq(1)
+        end
+    end
+
+    describe "#check_availability" do
+
+        clients = ClientController.send :all
+        services = ServiceController.send :all
+        providers = ProviderController.send :all
+        appointments = AppointmentController.send :all  
+
+        it "adds an overlapping appointment" do
+            AppointmentController.send :add_appointment, clients[0], services[0], providers[0], Date.new(2020,1,1), 12
+            expect(appointments.size()).to eq(1)   #note appointment added from first describe block
         end
     end
 
@@ -43,7 +54,7 @@ RSpec.describe AppointmentController do
             expect(appointments.size()).to eq(1)
         end
         it "removes the appointment" do
-            AppointmentController.send :remove_appointment, clients[0], services[0], providers[0], Date.new(2020,1,1), 12
+            AppointmentController.send :remove_appointment, clients[0], providers[0], Date.new(2020,1,1), 12
             expect(appointments.size()).to eq(0)
         end
         it "checks client controller" do
