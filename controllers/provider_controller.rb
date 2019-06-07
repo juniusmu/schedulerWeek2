@@ -39,13 +39,15 @@ class ProviderController
     phone_number = prompt.ask('Phone number:')
     service_types = $service_list.map { |service| service.name}
     choices = service_types
-    services = prompt.multi_select("Please choose services from the 
+    services_names = prompt.multi_select("Please choose services from the 
                 following list:", choices)
-    
-    services.each do |selected_service|
-	    $services_list.each do |service|
+    services = [] 
+    services_names.each do |selected_service|
+	    $service_list.each do |service|
 		    if(service.name == selected_service)
-			    @services << Service.new(service.name, service.price, service.duration)
+			    services << Service.new(service.name, service.price, service.duration)
+		    end
+	    end
     end
 
     days_off = prompt.multi_select('Days off:', ['Monday', 'Tuesday', 'Wednesday', 
