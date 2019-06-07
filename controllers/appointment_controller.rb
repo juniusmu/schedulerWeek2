@@ -59,12 +59,12 @@ class AppointmentController
       client_object = (ClientController.all.select{|client_name| client_name.name == client})[0]
       provider_object = (ProviderController.all.select{|provider_name| provider_name.name == provider})[0]
 
-      success = add_appointment(client_object, service, provider_object, date, start_time)
+      appointment = add_appointment(client_object, service, provider_object, date, start_time)
 
-      if success
+      if appointment != nil
         puts "Appointment successfully scheduled for #{client}:"
 
-        print
+        print(appointment)
 
         continueProgram = false
       else
@@ -82,24 +82,33 @@ class AppointmentController
                                                                       .map{|p| p.name})
 
     provider_object = (ProviderController.all.select{|provider_name| provider_name.name == provider})[0]
+
     # choose the name of the client
-    provider_clients = provider_object.scheduled_appointments.map{|pc| pc.name}
+    provider_clients = provider_object.scheduled_appointments.map{|pc| pc.client.name}
+    if provider_clients.size() > 0
+      client = prompt.select("Choose the client:", provider_clients)
+      client_object = (ClientController.all.select{|client_name| client_name.name == client})[0]
+    else
+      puts "
+      No clients for the selected provider
+      "
+      return
+    end
 
-    # puts provider_clients.class
-
-
-    client = prompt.select("Choose the client:", provider_clients)
-
-    # month = 
-   
     # list appointments
-    # client_appointments = @appointments.map{|ca| ca.provider.name = provider.name}
-    # client_appointments.each{print}
+    provider_appointments = client_object.appointments.each{|coa| print(coa)}
 
-    # puts client_appointments.first.name
+    # choose a date and start time from the provider
+    provider_dates = client_object.appointments.map{|appt| appt.date.to_s}
+    date = prompt.select('Select the appointment date:', provider_dates)
 
-    # choose an appointment from the provider
-    # client_appointment_delete = prompt.select("Select the clients appointment to delete:", client_appointments.map{|c| c.name})
+    provider_times = client_object.appointments.map{|appt| appt.start_time.to_s}
+    start_time = prompt.select('Select the appointment time:', provider_times)
+
+    #delete
+    success = remove_appointment(client, provider, date, start_time)
+
+
     # are you sure?
     # delete
 
@@ -124,13 +133,13 @@ class AppointmentController
     check_equal.include?(true)
   end
 
-  def self.print
+  def self.print(appointment)
     puts "
-    Client: #{@appointment_candidate.client.name}
-    Service: #{@appointment_candidate.service}
-    Provider: #{@appointment_candidate.provider.name}
-    Date: #{@appointment_candidate.date}
-    At: #{@appointment_candidate.start_time}:00
+    Client: #{appointment.client.name}
+    Service: #{appointment.service}
+    Provider: #{appointment.provider.name}
+    Date: #{appointment.date}
+    At: #{appointment.start_time}:00
     ----------"
     puts "\n"
   end
@@ -146,15 +155,18 @@ class AppointmentController
 
       @appointments << @appointment_candidate
       selected_provider.scheduled_appointments << @appointment_candidate
+      client.appointments << @appointment_candidate
 
-      return true
+      return @appointment_candidate
     else 
-      return false
+      return nil
     end
   end
 
-  def self.remove_appointment(client, service, date, start_time)
-    @appointment_delete = AppointmentController.all.select {|a| a.client == client && a.service == service && a.date == date && a.start_time == start_time}
+  def self.remove_appointment(client, provider, date, start_time)
+    @appointment_delete = (@appointments.each {|a| a.client == client}) #&& a.provider == provider && a.date == date && a.start_time == start_time}
+
+    # puts @appointment_delete
   end
     
 end
