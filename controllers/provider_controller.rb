@@ -72,7 +72,6 @@ class ProviderController
 	provider_name = prompt.select("Which provider's schedule would you like to see?", all_names)
 
 	selected_provider = @providers.select { |provider| provider.name == provider_name}[0]
-	puts selected_provider.available_days	
 	availability_frequency = prompt.select("Reocurring or unique day off?", ["Reoccuring", "Unique"])
 	case availability_frequency
 	when "Reoccuring"
