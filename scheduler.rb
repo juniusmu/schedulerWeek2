@@ -2,6 +2,7 @@ require 'tty-prompt'
 require './controllers/service_controller'
 require './controllers/provider_controller'
 require './controllers/appointment_controller'
+require './controllers/view_schedule_controller'
 
 class Scheduler
 	FUNCTION_LOOKUP = {
@@ -38,7 +39,7 @@ class Scheduler
 			method_name: :remove
 		},
 		"View Schedule of a Particular Provider" => {
-			controller: ProviderController,
+			controller: ViewScheduleController,
 			method_name: :view_schedule
 		}
 	}
@@ -51,5 +52,3 @@ class Scheduler
 		FUNCTION_LOOKUP[choice][:controller].send(FUNCTION_LOOKUP[choice][:method_name])
 	end
 end
-    
-
