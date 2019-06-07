@@ -107,7 +107,6 @@ class ProviderController
 	provider_name = prompt.select("Which provider's schedule would you like to see?", all_names)
 
 	selected_provider = @providers.select { |provider| provider.name == provider_name}[0]
-	puts selected_provider.available_days	
 	availability_frequency = prompt.select("Reocurring or unique day off?", ["Reoccuring", "Unique"])
 	case availability_frequency
 	when "Reoccuring"
@@ -159,7 +158,6 @@ class ProviderController
 	  dates_off = []
 	days_off.each do |day|
 		first_date_of_day = DaysOfWeek::FIRST_DATE_OF_DAY_IN_2020[day]
-		puts first_date_of_day
 		date = Date.new(2020, 1, first_date_of_day)
 		loop do
 			if date.year > 2020
@@ -169,9 +167,6 @@ class ProviderController
 			date = date + 7
 		end
 
-	end
-	dates_off.each do |day|
-		puts day
 	end
 	provider = Provider.new(name, phone_number, services, dates_off)
 	@providers << provider
