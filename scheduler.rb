@@ -33,7 +33,7 @@ class Scheduler
 			controller: AppointmentController,
 			method_name: :add
 		},
-		"Delete an Appointment" => {
+		"Remove an Appointment" => {
 			controller: AppointmentController,
 			method_name: :remove
 		},
