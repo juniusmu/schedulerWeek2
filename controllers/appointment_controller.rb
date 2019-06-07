@@ -42,15 +42,20 @@ class AppointmentController
                                                       .map{|c| c.name})
       end
 
-      service = prompt.select('Service wanted:', 
-                ['Mind Reading', 'Demonic Exorcism', 
-                'Potion Therapy', 'Liver Transplants'])
-      provider = prompt.select("Please select from these providers:",   
-                  ProviderController.all
-                    .select do |provider| 
-                      provider.services.include?(service)
-                    end.map(&:name)
-                  )
+      service_names = $service_list.map do |service|
+	      service.name
+      end
+      service = prompt.select('Service wanted:', service_names) 
+
+      providers_with_service = []
+      ProviderController.all.each do |provider|
+	    provider.services.each do |serv|
+	            if serv.name == service
+	        	providers_with_service << provider
+	            end    
+	    end
+      end
+      provider = prompt.select("Please select from these providers:", providers_with_service.map{|provider| provider.name})
       month = prompt.ask("What month in 2020 would you like to have the appointment?")
       day = prompt.ask("What day of the month would you like to have the appointment?")
       date = Date.new(2020,month.to_i,day.to_i)
